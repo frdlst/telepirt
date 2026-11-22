@@ -4,10 +4,11 @@ A Pi package that runs Pi's built-in tools on hosts you can reach over SSH.
 
 - `ssh` tool: run a command on a remote host. Windows hosts get PowerShell (pwsh if found, else
   Windows PowerShell), others bash.
-- `/rc <host>` command: serves Pi's own `read`, `edit`, `write`, `ls`, `grep`, `find` and
+- `rc` tool and `/rc <host>` command: serve Pi's own `read`, `edit`, `write`, `ls`, `grep`, `find` and
   `bash`/`powershell` on the host as an MCP server named after it (`user@devtest` becomes
-  `devtest`). The tools are not added to the model's toolset. Codemode scripts call them as
-  `tools.mcp__devtest__edit({...})` and list them with `describeNamespace("mcp__devtest")`.
+  `devtest`). The remote tools are not added to the model's toolset. Codemode scripts call them
+  as `tools.mcp__devtest__edit({...})`. The model calls `rc` itself when a prompt names a host,
+  so `/rc` is only needed to connect ahead of time.
 
 Editing a Windows file with the real `edit` tool keeps its line endings and BOM, without the
 model writing PowerShell to do it.
@@ -16,7 +17,7 @@ model writing PowerShell to do it.
 
 ```bash
 pi install /path/to/telepirt     # local checkout, loaded in place
-pi install git:github.com/<you>/telepirt
+pi install git:github.com/frdlst/telepirt
 ```
 
 ## Requirements
@@ -29,7 +30,7 @@ pi install git:github.com/<you>/telepirt
 - FreeBSD and other platforms Pi can't download `rg`/`fd` for: install them yourself
   (`pkg install ripgrep fd-find`).
 
-## How `/rc` works
+## How `rc` works
 
 1. `ssh host node -` runs a small probe script from stdin, which works under cmd.exe,
    PowerShell and sh alike. It reports the platform and whether
@@ -45,7 +46,7 @@ aborts everything still running.
 
 ## Limits
 
-- Registrations last for the session. Run `/rc` again after `/reload` or a restart.
+- Registrations last for the session. After `/reload` or a restart the model calls `rc` again.
 - Old `~/.pi/telepirt/<key>` dirs stay on remotes after Pi updates.
 - An aborted `ssh` tool call kills the local ssh only. The remote command keeps running.
 - Pi's `powershell` tool skips Microsoft Store app aliases, so a Store-installed pwsh falls
