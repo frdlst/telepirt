@@ -1,0 +1,14 @@
+{
+  "name": "telepirt",
+  "version": "0.1.0",
+  "description": "Run Pi's built-in tools on SSH hosts: an ssh tool and /rc, which serves read/edit/write/grep/... over MCP",
+  "keywords": ["pi-package"],
+  "files": ["extensions", "server.mjs", "README.md"],
+  "scripts": {
+    "test": "node test.mjs"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  }
+}
